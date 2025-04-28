@@ -11,20 +11,16 @@ export default function Login({ setAuth }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Datos del usuario predeterminado
-  const defaultUser = {
-    email: 'admin@ecoventas.com',
-    password: 'admin123'
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Función para autocompletar con el usuario predeterminado
   const fillDefaultUser = () => {
-    setFormData(defaultUser);
+    setFormData({
+      email: 'admin@ecoventas.com',
+      password: 'admin123'
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -32,26 +28,29 @@ export default function Login({ setAuth }) {
     setError('');
     setLoading(true);
 
-    // Simulación de login (solo frontend)
-    if (formData.email === defaultUser.email && formData.password === defaultUser.password) {
-      setTimeout(() => {
-        const mockAuthData = {
-          token: 'mock-token-123456789',
-          user: {
-            id: 1,
-            name: 'Administrador',
-            email: defaultUser.email,
-            role: 'admin'
-          }
-        };
-        
-        localStorage.setItem('token', mockAuthData.token);
-        localStorage.setItem('user', JSON.stringify(mockAuthData.user));
-        setAuth(mockAuthData.user);
-        navigate('/');
-      }, 1000); // Simulamos 1 segundo de delay como si fuera una API real
-    } else {
-      setError('Credenciales incorrectas. Usa el botón "Usuario de prueba" o ingresa los datos correctos.');
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al iniciar sesión');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setAuth(data.user);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
       setLoading(false);
     }
   };

@@ -20,6 +20,7 @@ app.use('/api/egresos', require('./routes/egreso.routes'));
 app.use('/api/facturas', require('./routes/factura.routes'));
 app.use('/api/itemventas', require('./routes/itemVenta.routes'));
 app.use('/api/categorias-egreso', require('./routes/categoriaEgreso.routes'));
+app.use('/api/auth', require('./routes/auth.routes')); // 👈 nueva ruta para login
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
