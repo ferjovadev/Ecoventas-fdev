@@ -7,18 +7,16 @@ export default function Ingresos() {
   const [nuevoIngreso, setNuevoIngreso] = useState({
     monto: '',
     descripcion: '',
-    fecha: new Date().toISOString().split('T')[0], // Fecha actual por defecto
-    fuente: 'venta' // Fuente por defecto
+    fecha: new Date().toISOString().split('T')[0],
+    fuente: 'venta'
   });
   const [editandoIngreso, setEditandoIngreso] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fuentes de ingreso disponibles
   const fuentesIngreso = ['venta', 'servicio', 'inversión', 'otro'];
 
-  // Función centralizada para manejar solicitudes HTTP
   const apiRequest = async (method, url, data = null) => {
     try {
       const response = await axios({ method, url, data });
@@ -54,14 +52,14 @@ export default function Ingresos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validaciones
-    if (!nuevoIngreso.monto || !nuevoIngreso.descripcion || !nuevoIngreso.fecha || !nuevoIngreso.fuente) {
+    const { monto, descripcion, fecha, fuente } = nuevoIngreso;
+
+    if (!monto || !descripcion || !fecha || !fuente) {
       setError('Por favor complete todos los campos');
       return;
     }
 
-    if (isNaN(nuevoIngreso.monto)) {
+    if (isNaN(monto)) {
       setError('El monto debe ser un número válido');
       return;
     }
@@ -114,8 +112,7 @@ export default function Ingresos() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const { monto, descripcion, fecha, fuente } = editandoIngreso;
-    
-    // Validaciones
+
     if (!monto || !descripcion || !fecha || !fuente) {
       setError('Por favor complete todos los campos');
       return;
@@ -143,17 +140,22 @@ export default function Ingresos() {
     }
   };
 
-  // Formatear fecha para mostrar
   const formatFecha = (fecha) => {
     return new Date(fecha).toLocaleDateString('es-ES');
   };
 
-  // Formatear monto como moneda
   const formatMonto = (monto) => {
+    if (isNaN(monto)) return '$0.00';
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS'
     }).format(monto);
+  };
+
+  const formatFuente = (fuente) => {
+    return typeof fuente === 'string'
+      ? fuente.charAt(0).toUpperCase() + fuente.slice(1)
+      : 'Desconocida';
   };
 
   return (
@@ -213,7 +215,7 @@ export default function Ingresos() {
           >
             {fuentesIngreso.map(fuente => (
               <option key={fuente} value={fuente}>
-                {fuente.charAt(0).toUpperCase() + fuente.slice(1)}
+                {formatFuente(fuente)}
               </option>
             ))}
           </select>
@@ -265,7 +267,7 @@ export default function Ingresos() {
                       <input
                         type="date"
                         name="fecha"
-                        value={editandoIngreso.fecha.split('T')[0]}
+                        value={editandoIngreso.fecha?.split('T')[0]}
                         onChange={e => setEditandoIngreso({ ...editandoIngreso, fecha: e.target.value })}
                         required
                       />
@@ -280,7 +282,7 @@ export default function Ingresos() {
                       >
                         {fuentesIngreso.map(fuente => (
                           <option key={fuente} value={fuente}>
-                            {fuente.charAt(0).toUpperCase() + fuente.slice(1)}
+                            {formatFuente(fuente)}
                           </option>
                         ))}
                       </select>
@@ -307,8 +309,8 @@ export default function Ingresos() {
                       <p className="ingreso-descripcion">{i.descripcion}</p>
                       <div className="ingreso-detalles">
                         <span className="ingreso-fecha">{formatFecha(i.fecha)}</span>
-                        <span className={`ingreso-fuente ${i.fuente}`}>
-                          {i.fuente.charAt(0).toUpperCase() + i.fuente.slice(1)}
+                        <span className={`ingreso-fuente ${i.fuente || 'desconocida'}`}>
+                          {formatFuente(i.fuente)}
                         </span>
                       </div>
                     </div>
@@ -336,7 +338,6 @@ export default function Ingresos() {
           </ul>
         )}
       </div>
-        
     </div>
   );
 }

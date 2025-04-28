@@ -2336,3 +2336,42 @@ li {
 .venta-item button:hover {
   background-color: #c0392b;
 }
+
+
+
+/* Estilo para el botón de Nueva Venta */
+.btn-primary {
+  background-color: #4CAF50; /* Verde */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background-color: #45a049; /* Verde oscuro */
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  background-color: #388e3c; /* Verde más oscuro */
+  transform: translateY(0);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(72, 174, 48, 0.6); /* Resalta el botón cuando tiene foco */
+}
+
+/* Estilo para cuando el botón está deshabilitado */
+.btn-primary:disabled {
+  background-color: #dcdcdc; /* Gris */
+  cursor: not-allowed;
+}

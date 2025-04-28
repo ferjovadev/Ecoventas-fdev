@@ -261,7 +261,7 @@ export default function Ventas() {
           const cliente = clientes.find(c => c._id === venta.cliente);
           return (
             <div key={venta._id} className="venta-item">
-              <p><strong>Cliente:</strong> {cliente ? cliente.nombre : 'Cliente eliminado'}</p>
+              <p><strong>Cliente:</strong> {cliente ? cliente.nombre : ' .  '}</p>
               <p><strong>Total:</strong> S/. {venta.total.toFixed(2)}</p>
               <div className="flex mt-2">
                 <button className="btn-small" onClick={() => handleEditarVenta(venta)}>Editar</button>
@@ -274,4 +274,3 @@ export default function Ventas() {
     </div>
   );
 }
-

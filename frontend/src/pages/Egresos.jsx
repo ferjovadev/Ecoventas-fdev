@@ -13,7 +13,6 @@ export default function Egresos() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [categorias, setCategorias] = useState([]);
 
   // Función centralizada para manejar las solicitudes HTTP
   const apiRequest = async (method, url, data = null) => {
@@ -27,17 +26,12 @@ export default function Egresos() {
     }
   };
 
-  // Cargar egresos y categorías
+  // Cargar egresos
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [egresosData, categoriasData] = await Promise.all([
-        apiRequest('get', 'http://localhost:3000/api/egresos'),
-        apiRequest('get', 'http://localhost:3000/api/categoriasEgreso')
-      ]);
-      
+      const egresosData = await apiRequest('get', 'http://localhost:3000/api/egresos');
       if (egresosData) setEgresos(egresosData);
-      if (categoriasData) setCategorias(categoriasData);
       setError('');
     } catch (error) {
       setError('Error al cargar los datos');
@@ -54,7 +48,7 @@ export default function Egresos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.monto || !formData.descripcion || !formData.fecha || !formData.categoria) {
+    if (!formData.monto || !formData.descripcion || !formData.fecha) {
       setError('Por favor complete todos los campos');
       return;
     }
@@ -79,8 +73,7 @@ export default function Egresos() {
         setFormData({ 
           monto: '', 
           descripcion: '', 
-          fecha: new Date().toISOString().split('T')[0],
-          categoria: ''
+          fecha: new Date().toISOString().split('T')[0]
         });
         setEditData(null);
         setTimeout(() => setSuccess(''), 3000);
@@ -118,8 +111,7 @@ export default function Egresos() {
     setFormData({ 
       monto: egreso.monto, 
       descripcion: egreso.descripcion, 
-      fecha: egreso.fecha.split('T')[0],
-      categoria: egreso.categoria?._id || ''
+      fecha: egreso.fecha.split('T')[0]
     });
     setError('');
   };
@@ -190,21 +182,6 @@ export default function Egresos() {
           />
         </div>
         
-        <div className="form-group">
-          <label><FiFileText className="icon" /> Categoría:</label>
-          <select
-            name="categoria"
-            value={formData.categoria || ''}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione una categoría</option>
-            {categorias.map(cat => (
-              <option key={cat._id} value={cat._id}>{cat.nombre}</option>
-            ))}
-          </select>
-        </div>
-        
         <button 
           type="submit" 
           className="btn btn-primary" 
@@ -226,8 +203,7 @@ export default function Egresos() {
               setFormData({ 
                 monto: '', 
                 descripcion: '', 
-                fecha: new Date().toISOString().split('T')[0],
-                categoria: ''
+                fecha: new Date().toISOString().split('T')[0]
               });
             }}
             disabled={isLoading}
@@ -280,20 +256,6 @@ export default function Egresos() {
                       />
                     </div>
                     
-                    <div className="form-group">
-                      <select
-                        name="categoria"
-                        value={formData.categoria || ''}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Seleccione una categoría</option>
-                        {categorias.map(cat => (
-                          <option key={cat._id} value={cat._id}>{cat.nombre}</option>
-                        ))}
-                      </select>
-                    </div>
-                    
                     <div className="action-buttons">
                       <button type="submit" className="btn btn-success" disabled={isLoading}>
                         <FiSave className="icon" /> {isLoading ? 'Guardando...' : 'Guardar'}
@@ -306,8 +268,7 @@ export default function Egresos() {
                           setFormData({ 
                             monto: '', 
                             descripcion: '', 
-                            fecha: new Date().toISOString().split('T')[0],
-                            categoria: ''
+                            fecha: new Date().toISOString().split('T')[0]
                           });
                         }}
                         disabled={isLoading}
@@ -323,9 +284,6 @@ export default function Egresos() {
                       <p className="egreso-descripcion">{e.descripcion}</p>
                       <div className="egreso-detalles">
                         <span className="egreso-fecha">{formatFecha(e.fecha)}</span>
-                        {e.categoria && (
-                          <span className="egreso-categoria">{e.categoria.nombre}</span>
-                        )}
                       </div>
                     </div>
                     
