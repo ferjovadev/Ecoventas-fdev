@@ -1,19 +1,35 @@
-// src/pages/Chat.jsx
 import { useEffect, useRef, useState } from "react";
 import { FiSend, FiUser } from "react-icons/fi";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Asegúrate de que tu servidor WebSocket esté aquí
+const socket = io("http://localhost:3000");
 
 export default function Chat() {
-  const [nombre, setNombre] = useState("");
+  const [nombre, setNombre] = useState(""); // nombre definitivo
+  const [nombreInput, setNombreInput] = useState(""); // input temporal
   const [mensaje, setMensaje] = useState("");
   const [mensajes, setMensajes] = useState([]);
   const mensajesEndRef = useRef(null);
 
   useEffect(() => {
     socket.on("mensaje", (msg) => {
-      setMensajes((prev) => [...prev, msg]);
+      let textoLimpio = msg.texto;
+
+      // Eliminar bloques <think>...</think>
+      while (
+        textoLimpio.includes("<think>") &&
+        textoLimpio.includes("</think>")
+      ) {
+        const inicio = textoLimpio.indexOf("<think>");
+        const fin = textoLimpio.indexOf("</think>") + "</think>".length;
+        textoLimpio = textoLimpio.slice(0, inicio) + textoLimpio.slice(fin);
+      }
+
+      textoLimpio = textoLimpio.trim();
+
+      // Guardar mensaje limpio
+      const mensajeLimpio = { ...msg, texto: textoLimpio };
+      setMensajes((prev) => [...prev, mensajeLimpio]);
     });
 
     return () => {
@@ -28,13 +44,22 @@ export default function Chat() {
   const handleEnviar = (e) => {
     e.preventDefault();
     if (!nombre || !mensaje) return;
+
     const nuevoMensaje = {
       nombre,
       texto: mensaje,
       hora: new Date().toLocaleTimeString(),
     };
+
     socket.emit("mensaje", nuevoMensaje);
     setMensaje("");
+  };
+
+  const handleIngresoNombre = (e) => {
+    e.preventDefault();
+    if (nombreInput.trim()) {
+      setNombre(nombreInput.trim());
+    }
   };
 
   return (
@@ -44,21 +69,15 @@ export default function Chat() {
       </h2>
 
       {!nombre ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (nombre.trim()) setNombre(nombre.trim());
-          }}
-          className="clientes-form"
-        >
+        <form onSubmit={handleIngresoNombre} className="clientes-form">
           <div className="form-group">
             <label>
               <FiUser className="icon" /> Tu nombre:
             </label>
             <input
               type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              value={nombreInput}
+              onChange={(e) => setNombreInput(e.target.value)}
               placeholder="Ingresa tu nombre"
               required
             />

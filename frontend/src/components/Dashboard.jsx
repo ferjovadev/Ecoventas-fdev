@@ -3,44 +3,50 @@ import { FiHome, FiUsers, FiShoppingCart, FiPieChart, FiDollarSign,
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
+  // Datos de ejemplo
+  const ventasTotales = 3;
+  const ingresosTotales = 2100;
+  const egresosTotales = 1000;
+
   return (
     <div className="dashboard-container">
-      <aside className="sidebar">
-        <h2 className="logo">EcoVentasExpress</h2>
-        <nav>
-          <Link to="/" className="nav-item">
-            <FiHome className="icon" /> Inicio
-          </Link>
-          <Link to="/ventas" className="nav-item">
-            <FiShoppingCart className="icon" /> Ventas
-          </Link>
-          <Link to="/productos" className="nav-item">
-            <FiBox className="icon" /> Productos
-          </Link>
-          <Link to="/clientes" className="nav-item">
-            <FiUsers className="icon" /> Clientes
-          </Link>
-          <Link to="/reportes" className="nav-item">
-            <FiPieChart className="icon" /> Reportes
-          </Link>
-          <Link to="/ingresos" className="nav-item">
-            <FiTrendingUp className="icon" /> Ingresos
-          </Link>
-          <Link to="/egresos" className="nav-item">
-            <FiTrendingDown className="icon" /> Egresos
-          </Link>
-          <Link to="/facturas" className="nav-item">
-            <FiFileText className="icon" /> Facturas
-          </Link>
-        </nav>
-      </aside>
-      
+    
+
+      {/* Main Content */}
       <main className="main-content">
         <header className="topbar">
           <h2>Bienvenido al Sistema</h2>
         </header>
+
         <div className="content">
-          {/* Contenido del dashboard */}
+          <div className="dashboard-cards">
+            <div className="card">
+              <h3>Ventas Totales</h3>
+              <p>{`${ventasTotales.toLocaleString()}`}</p>
+            </div>
+            <div className="card">
+              <h3>Ingresos Totales</h3>
+              <p>{`S/${ingresosTotales.toLocaleString()}`}</p>
+            </div>
+            <div className="card">
+              <h3>Egresos Totales</h3>
+              <p>{`S/${egresosTotales.toLocaleString()}`}</p>
+            </div>
+          </div>
+
+          <div className="stats">
+            <h3>Estadísticas Rápidas</h3>
+            <div className="stat-card">
+              <FiTrendingUp className="stat-icon" />
+              <h4>Ingresos de Este Mes</h4>
+              <p>{`$${ingresosTotales.toLocaleString()}`}</p>
+            </div>
+            <div className="stat-card">
+              <FiTrendingDown className="stat-icon" />
+              <h4>Egresos de Este Mes</h4>
+              <p>{`$${egresosTotales.toLocaleString()}`}</p>
+            </div>
+          </div>
         </div>
       </main>
     </div>

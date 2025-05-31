@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import {
+  FiHome,
   FiBox,
   FiFileText,
   FiLogOut,
   FiMessageCircle,
-  FiPieChart,
   FiSettings,
   FiShoppingCart,
   FiTrendingDown,
   FiTrendingUp,
   FiUsers,
 } from "react-icons/fi";
-import {
-  NavLink,
-  Route,
-  BrowserRouter as Router,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import "./index.css";
 import Chat from "./pages/Chat";
@@ -29,6 +23,7 @@ import Productos from "./pages/Productos";
 import Reportes from "./pages/Reportes";
 import Usuarios from "./pages/Usuarios";
 import Ventas from "./pages/Ventas";
+import Dashboard from "./components/Dashboard"; // Importación de Dashboard
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -92,6 +87,9 @@ function MainAppLayout({ user, setUser }) {
         </div>
 
         <nav className="main-nav">
+          <NavMenuItem to="/" icon={<FiHome size={20} />}>
+            Inicio
+          </NavMenuItem>
           <NavMenuItem to="/ventas" icon={<FiShoppingCart size={20} />}>
             Ventas
           </NavMenuItem>
@@ -100,9 +98,6 @@ function MainAppLayout({ user, setUser }) {
           </NavMenuItem>
           <NavMenuItem to="/clientes" icon={<FiUsers size={20} />}>
             Clientes
-          </NavMenuItem>
-          <NavMenuItem to="/reportes" icon={<FiPieChart size={20} />}>
-            Reportes
           </NavMenuItem>
           <NavMenuItem to="/chat" icon={<FiMessageCircle size={20} />}>
             Chat
@@ -155,6 +150,7 @@ function MainAppLayout({ user, setUser }) {
         {/* Content Area */}
         <div className="app-content">
           <Routes>
+            <Route path="/" element={<Dashboard />} /> {/* Ruta principal */}
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/productos" element={<Productos />} />

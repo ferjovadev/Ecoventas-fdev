@@ -1,5 +1,5 @@
 // Importa mongoose al inicio del archivo
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define el esquema de Cliente
 const ClienteSchema = new mongoose.Schema({
@@ -9,4 +9,4 @@ const ClienteSchema = new mongoose.Schema({
   direccion: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Cliente', ClienteSchema);
+module.exports = mongoose.model("Cliente", ClienteSchema);

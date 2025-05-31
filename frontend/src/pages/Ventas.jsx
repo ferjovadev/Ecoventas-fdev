@@ -73,59 +73,70 @@ export default function Ventas() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      let clienteId = nuevaVenta.cliente;
+  e.preventDefault();
+  try {
+    let clienteId = nuevaVenta.cliente;
 
-      if (!clienteId) {
-        // Crear cliente manual si no existe
-        const res = await axios.post('http://localhost:3000/api/clientes', clienteManual);
-        clienteId = res.data._id;
-        setClientes((prev) => [...prev, res.data]);
-      }
-
-      const ventaData = {
-        cliente: clienteId,
-        productos: nuevaVenta.productos,
-        total: nuevaVenta.total,
-      };
-
-      // Verificar stock antes de proceder con la venta
-      for (const item of nuevaVenta.productos) {
-        const producto = productos.find((p) => p._id === item.producto);
-        if (producto && producto.stock < item.cantidad) {
-          throw new Error(`No hay suficiente stock para el producto: ${producto.nombre}`);
-        }
-      }
-
-      if (editandoVentaId) {
-        // Editar Venta
-        await axios.put(`http://localhost:3000/api/ventas/${editandoVentaId}`, ventaData);
-        alert('Venta actualizada correctamente');
-      } else {
-        // Nueva Venta
-        await axios.post('http://localhost:3000/api/ventas', ventaData);
-        alert('Venta registrada correctamente');
-      }
-
-      // Actualizar el stock de los productos después de la venta
-      for (const item of nuevaVenta.productos) {
-        const producto = productos.find((p) => p._id === item.producto);
-        if (producto) {
-          const nuevoStock = producto.stock - item.cantidad;
-          await axios.put(`http://localhost:3000/api/productos/${producto._id}`, {
-            stock: nuevoStock,
-          });
-        }
-      }
-
-      toggleVentanaVenta();
-      cargarVentas();
-    } catch (err) {
-      console.error(err);
-      setError('Error al procesar la venta');
+    if (!clienteId) {
+      // Crear cliente manual si no existe
+      const resCliente = await axios.post('http://localhost:3000/api/clientes', clienteManual);
+      clienteId = resCliente.data._id;
+      setClientes((prev) => [...prev, resCliente.data]);
     }
-  };
+
+    const ventaData = {
+      cliente_id: clienteId,
+      productos: nuevaVenta.productos,
+      total: nuevaVenta.total,
+    };
+
+    // Verificar stock antes de proceder con la venta
+    for (const item of nuevaVenta.productos) {
+      const producto = productos.find((p) => p._id === item.producto);
+      if (producto && producto.stock < item.cantidad) {
+        throw new Error(`No hay suficiente stock para el producto: ${producto.nombre}`);
+      }
+    }
+
+    let ventaRes;
+    if (editandoVentaId) {
+      // Editar Venta
+      ventaRes = await axios.put(`http://localhost:3000/api/ventas/${editandoVentaId}`, ventaData);
+      alert('Venta actualizada correctamente');
+    } else {
+      // Nueva Venta
+      ventaRes = await axios.post('http://localhost:3000/api/ventas', ventaData);
+      alert('Venta registrada correctamente');
+    }
+
+    // Actualizar el stock de los productos después de la venta
+    for (const item of nuevaVenta.productos) {
+      const producto = productos.find((p) => p._id === item.producto);
+      if (producto) {
+        const nuevoStock = producto.stock - item.cantidad;
+        await axios.put(`http://localhost:3000/api/productos/${producto._id}`, {
+          stock: nuevoStock,
+        });
+      }
+    }
+
+    // Crear ingreso asociado a la venta
+    await axios.post('http://localhost:3000/api/ingresos', {
+      fecha: new Date(),
+      monto: nuevaVenta.total,
+      tipo: 'venta',
+      descripcion: `Ingreso por venta ${ventaRes.data._id}`,
+      venta_id: ventaRes.data._id,
+      usuario_id: null, // Pon aquí el usuario si lo tienes disponible
+    });
+
+    toggleVentanaVenta();
+    cargarVentas();
+  } catch (err) {
+    console.error(err);
+    setError('Error al procesar la venta');
+  }
+};
 
   const cargarVentas = async () => {
     try {
@@ -258,10 +269,10 @@ export default function Ventas() {
       {/* Lista de Ventas */}
       <div className="ventas-list">
         {ventas.map((venta) => {
-          const cliente = clientes.find(c => c._id === venta.cliente);
+          const cliente = clientes.find(c => c._id === venta.cliente_id);
           return (
             <div key={venta._id} className="venta-item">
-              <p><strong>Cliente:</strong> {cliente ? cliente.nombre : ' .  '}</p>
+              <p><strong>Cliente:</strong> {cliente ? cliente.nombre : 'Cliente no encontrado'}</p>
               <p><strong>Total:</strong> S/. {venta.total.toFixed(2)}</p>
               <div className="flex mt-2">
                 <button className="btn-small" onClick={() => handleEditarVenta(venta)}>Editar</button>
