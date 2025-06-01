@@ -1,0 +1,25 @@
+### Instrucciones para la ejecución del proyecto
+
+Para que el sistema funcione correctamente, es necesario ejecutar el backend y el frontend de forma separada. Esto permite mantener ambas partes del sistema organizadas y facilita el mantenimiento y las pruebas.
+
+Pasos para ejecutar el backend:
+
+1. Abrir una terminal y acceder a la carpeta del backend:
+   cd backend
+
+2. Instalar las dependencias necesarias:
+   npm install
+
+3. Ejecutar el servidor del backend:
+   npm run dev
+
+Pasos para ejecutar el frontend:
+
+1. Abrir otra terminal y acceder a la carpeta del frontend:
+   cd frontend
+
+2. Instalar las dependencias necesarias:
+   npm install
+
+3. Ejecutar la aplicación del frontend:
+   npm run dev
