@@ -5,21 +5,31 @@ Para que el sistema funcione correctamente, es necesario ejecutar el backend y e
 Pasos para ejecutar el backend:
 
 1. Abrir una terminal y acceder a la carpeta del backend:
+```bash
    cd backend
+```
+3. Instalar las dependencias necesarias:
+```bash
+    npm install
+```
 
-2. Instalar las dependencias necesarias:
-   npm install
-
-3. Ejecutar el servidor del backend:
+5. Ejecutar el servidor del backend:
+```bash
    npm run dev
+```
 
 Pasos para ejecutar el frontend:
 
 1. Abrir otra terminal y acceder a la carpeta del frontend:
+```bash
    cd frontend
+```
 
 2. Instalar las dependencias necesarias:
+```bash
    npm install
-
+```
 3. Ejecutar la aplicación del frontend:
+```bash
    npm run dev
+```
