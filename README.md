@@ -8,12 +8,12 @@ Pasos para ejecutar el backend:
 ```bash
    cd backend
 ```
-3. Instalar las dependencias necesarias:
+2. Instalar las dependencias necesarias:
 ```bash
     npm install
 ```
 
-5. Ejecutar el servidor del backend:
+3. Ejecutar el servidor del backend:
 ```bash
    npm run dev
 ```
